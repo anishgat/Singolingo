@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         quizPage.style.display = 'block';
         songChoice.value = '';
         songOptions.innerHTML = '';
+        learnText.innerHTML = '';
     }
 
     function makeAPIRequest(song_id) {
