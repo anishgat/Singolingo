@@ -1,38 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <title>Figure out the lyrics</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script type="text/javascript" src="..\static\script.js"></script>
-    </head>
-    <body>
-        <div id="searchPage">
-            <div class="container">
-                <h1 style="text-align: center; margin-bottom: 50px;">Search for a song</h1>
-                <input class="form-control form-control-lg" type="text" id="songChoice">
-                <div id="songOptions" class="list-group"></div>
-            </div>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Figure out the lyrics</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="..\static\script.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Koulen&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="searchPage">
+        <div class="container">
+            <h1>SEARCH</h1>
+            <input class="form-control form-control-lg" type="text" id="songChoice">
+            <div id="songOptions" class="list-group"></div>
         </div>
+    </div>
 
-        <div id="quizPage">
-            <div class="container">
-                <h1 style="text-align: center; margin-bottom: 50px;" id="songTitle">Song Name</h1>
-                <div id="question">
-                    <input class="form-control form-control-lg" type="text" value="" aria-label=".form-control-lg example" id="questionText" disabled>
-                </div>
-                <div id="answer">
-                    <input class="form-control form-control-lg" type="text" placeholder="Translate the lyrics..." aria-label=".form-control-lg example" id="answerText">
-                </div>
-                <button type="button" class="btn btn-primary" id="next">Next</button>
-                <button type="button" class="btn btn-warning" id="skip" style="display: none;">Skip</button>
-                <button type="button" class="btn btn-secondary" id="learn">Learn</button>
-                <button type="button" class="btn btn-danger" id="back">Back</button>
-
-                <p id="learnText"></p>
-
+    <div id="quizPage">
+        <div class="container">
+            <h1 id="songTitle">SONG NAME</h1>
+            <div id="question">
+                <input class="form-control form-control-lg" type="text" value="" aria-label=".form-control-lg example"
+                    id="questionText" disabled>
             </div>
+            <div id="answer">
+                <input class="form-control form-control-lg" type="text" placeholder="Translate the lyrics..."
+                    aria-label=".form-control-lg example" id="answerText">
+            </div>
+            <button type="button" class="btn btn-primary" id="next">Next</button>
+            <button type="button" class="btn btn-warning" id="skip" style="display: none;">Skip</button>
+            <button type="button" class="btn btn-secondary" id="learn">Learn</button>
+            <button type="button" class="btn btn-danger" id="back">Back</button>
+
+            <p id="learnText"></p>
+
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
