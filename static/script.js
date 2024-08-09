@@ -78,6 +78,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!answerText.value) {
             return alert('Please key in an answer.');
         }
+        
+        let search_query = new URLSearchParams({question: chained_lyrics[questionNumber][0], user_answer: answerText.value, model_answer: chained_lyrics[questionNumber][1]});
+        fetch(`http://127.0.0.1:8000/check-answer?${search_query}`)
+        .then(response => response.json())
+        .then(result => {
+            if (result['response'].toLowerCase() === 'no') {
+                tries++;
+                if (tries === 2) {
+                    skipButton.style.display = 'block';
+                }
+                return alert('Wrong answer');
+            } else {
+                nextQuestion();
+            }
+        })
+        
+        /*
         if (answerText.value.toLowerCase() !== chained_lyrics[questionNumber][1].toLowerCase()) {
             tries++;
             if (tries === 2) {
@@ -85,10 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return alert('Wrong answer');
         }
+        */
+
         if (questionNumber > chained_lyrics.length) {
             return alert('The song is completed');
         }
-        nextQuestion();
     });
 
     answerText.addEventListener('keyup', (event) => {

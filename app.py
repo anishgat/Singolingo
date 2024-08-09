@@ -5,8 +5,13 @@ from database import engine, SessionLocal
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List
+from openai import OpenAI
+from dotenv import load_dotenv
 
 app = FastAPI()
+
+load_dotenv()
+client = OpenAI()
 
 # models.Base.metadata.create_all(bind=engine)
 
@@ -50,7 +55,20 @@ def generateSongAutocomplete(search_query: str, db: Session = Depends(get_db)):
         ).filter(
             models.Song.title.ilike(f'%{search_query}%')
         ).order_by(
-            "position", 
+            "position",
             "length"
-        ).limit(10)
+        ).limit(50)
     return [models.SongBase.model_validate(song[0]) for song in songs]
+
+@app.get("/check-answer")
+def checkAnswer(question: str, user_answer: str, model_answer:str, db: Session = Depends(get_db)):
+    prompt = f"Sentence: {question} \nModel answer: {model_answer} \nTranslation: {user_answer}"
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "you are a linguistic expert in english and hindi, and your job is to determine whether an english translation of a certain sentence in hindi is mostly accurate. As long as the english translation conveys the idea intended by the hindi sentence, it is valid. You will be provided with a model answer, and the answer is valid if the meaning of the answer closely matches the model answer. If the answer is valid, say yes, otherwise, say no. Your final response should tell me 'yes' or 'no'."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    response = completion.choices[0].message.content
+    return {"response": response}
