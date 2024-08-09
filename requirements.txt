@@ -1,7 +1,0 @@
-fastapi==0.112.0
-openai==1.39.0
-pydantic==2.8.2
-python-dotenv==1.0.1
-Requests==2.32.3
-requests_html==0.10.0
-SQLAlchemy==2.0.27
