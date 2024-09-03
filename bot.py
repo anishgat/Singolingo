@@ -27,7 +27,7 @@ def get_song(message):
     global songChosen, chained_lyrics, questionNumber
 
     if not songChosen:    
-        response = requests.get('http://127.0.0.1:8000/get-song-id', params={'title': message.text})
+        response = requests.get('https://singolingo.onrender.com/get-song-id', params={'title': message.text})
         if response.status_code == 200:
             data = response.json()
             
@@ -48,7 +48,7 @@ def get_song(message):
 def handle_answer(answer):
     global songChosen, chained_lyrics, questionNumber
     if songChosen:
-        response = requests.get('http://127.0.0.1:8000/check-answer', params={'question': chained_lyrics[questionNumber][0], 'user_answer': answer.text, 'model_answer': chained_lyrics[questionNumber][1]})
+        response = requests.get('https://singolingo.onrender.com/check-answer', params={'question': chained_lyrics[questionNumber][0], 'user_answer': answer.text, 'model_answer': chained_lyrics[questionNumber][1]})
         if response.status_code == 200:
             ai_response = response.json()
             if ai_response['response'].lower() == 'no':
