@@ -20,6 +20,7 @@ markup.add(learnButton, backButton)
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
+    reset()
     bot.send_message(message.chat.id, 'Welcome to SingoLingo! Choose a hindi song and translate it\'s lyrics one line at a time.')
 
 @bot.message_handler(func=lambda message: not songChosen)
