@@ -41,7 +41,7 @@ def get_song(message):
             question = chained_lyrics[questionNumber][0]
 
             bot.send_message(message.chat.id, f'{message.text} was found! Translate the each line to english as closely as possible.')
-            question_message = bot.send_message(message.chat.id, f'<b>{question}<b>', reply_markup=markup, parse_mode='HTML')
+            question_message = bot.send_message(message.chat.id, question, reply_markup=markup)
 
             prevMessageData[message.chat.id] = question_message.message_id
         
@@ -69,7 +69,7 @@ def handle_answer(answer):
                     bot.edit_message_reply_markup(answer.chat.id, prevMessageData[answer.chat.id], reply_markup=None)
                     prevMessageData.pop(answer.chat.id)
                     bot.send_message(answer.chat.id, '✅')
-                    bot.send_message(answer.chat.id, f'<b>{question}<b>', reply_markup=markup, parse_mode='HTML')
+                    bot.send_message(answer.chat.id, question, reply_markup=markup)
         else:
             bot.send_message(answer.chat.id, 'An error occurred during the checking process')
             bot.send_message(answer.chat.id, response)
@@ -86,7 +86,7 @@ def handle_buttons(call):
         else:
             questionNumber += 1
             question = chained_lyrics[questionNumber][0]
-            bot.send_message(call.message.chat.id, f'<b>{question}<b>', reply_markup=markup, parse_mode='HTML')
+            bot.send_message(call.message.chat.id, question, reply_markup=markup)
 
     elif call.data == "back":
         reset()
