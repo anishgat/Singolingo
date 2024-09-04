@@ -3,6 +3,7 @@ import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from dotenv import load_dotenv
 import requests
+import re
 
 load_dotenv()
 
@@ -32,8 +33,8 @@ def get_song(message):
         if response.status_code == 200:
             data = response.json()
             
-            formatted_hindi_lyrics = data['hindi_lyrics'].split('\n')
-            formatted_english_lyrics = data['english_lyrics'].split('\n')
+            formatted_hindi_lyrics = re.split('\n+', data['hindi_lyrics']) # Splits when there is one or more newlines
+            formatted_english_lyrics = re.split('\n+', data['english_lyrics'])
             chained_lyrics = list(zip(formatted_hindi_lyrics, formatted_english_lyrics))[0:-2]
             songChosen = True
             question = chained_lyrics[questionNumber][0]
