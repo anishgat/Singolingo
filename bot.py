@@ -13,6 +13,7 @@ bot = telebot.TeleBot(TELEGRAM_API_KEY)
 questionNumber = 0
 chained_lyrics = []
 songChosen = False
+prevMessageData = {}
 
 markup = InlineKeyboardMarkup()
 learnButton = InlineKeyboardButton("Learn", callback_data="learn")
@@ -40,7 +41,9 @@ def get_song(message):
             question = chained_lyrics[questionNumber][0]
 
             bot.send_message(message.chat.id, f'{message.text} was found! Translate the each line to english as closely as possible.')
-            bot.send_message(message.chat.id, question, reply_markup=markup)
+            question_message = bot.send_message(message.chat.id, question, reply_markup=markup)
+
+            prevMessageData[message.chat.id] = question_message.message_id
         
         elif response.status_code == 404:
             bot.send_message(message.chat.id, f'The song {message.text} was not found.')
@@ -63,6 +66,8 @@ def handle_answer(answer):
                 else:
                     questionNumber += 1
                     question = chained_lyrics[questionNumber][0]
+                    bot.edit_message_reply_markup(answer.chat.id, prevMessageData[answer.chat.id], reply_markup=None)
+                    prevMessageData.pop(answer.chat.id)
                     bot.send_message(answer.chat.id, '✅')
                     bot.send_message(answer.chat.id, question, reply_markup=markup)
         else:
