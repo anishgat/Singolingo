@@ -66,6 +66,7 @@ def handle_answer(answer):
                     bot.send_message(answer.chat.id, question, reply_markup=markup)
         else:
             bot.send_message(answer.chat.id, 'An error occurred during the checking process')
+            bot.send_message(answer.chat.id, response)
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
