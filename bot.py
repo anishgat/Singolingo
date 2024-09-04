@@ -69,7 +69,7 @@ def handle_answer(answer):
             bot.send_message(answer.chat.id, 'An error occurred during the checking process')
 
 @bot.callback_query_handler(func=lambda call: True)
-def handle_query(call):
+def handle_buttons(call):
     global songChosen, chained_lyrics, questionNumber
     if call.data == "learn":
         bot.send_message(call.message.chat.id, chained_lyrics[questionNumber][1])
@@ -85,6 +85,8 @@ def handle_query(call):
     elif call.data == "back":
         reset()
         bot.send_message(call.message.chat.id, 'To choose another song, type in the name of the song.')
+    
+    bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
 
 def reset():
     global songChosen, chained_lyrics, questionNumber
