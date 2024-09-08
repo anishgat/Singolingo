@@ -64,12 +64,18 @@ def handle_answer(answer):
                     bot.send_message(answer.chat.id, 'Congratulations, the song is complete!')
                     bot.send_message(answer.chat.id, 'To choose another song, type in the name of the song.')
                 else:
-                    questionNumber += 1
-                    question = chained_lyrics[questionNumber][0]
-                    bot.edit_message_reply_markup(answer.chat.id, prevMessageData[answer.chat.id], reply_markup=None)
-                    prevMessageData.pop(answer.chat.id)
-                    bot.send_message(answer.chat.id, '✅')
-                    bot.send_message(answer.chat.id, question, reply_markup=markup)
+                    try:
+                        questionNumber += 1
+                        question = chained_lyrics[questionNumber][0]
+                        bot.edit_message_reply_markup(answer.chat.id, prevMessageData[answer.chat.id], reply_markup=None)
+                        prevMessageData.pop(answer.chat.id)
+                        bot.send_message(answer.chat.id, '✅')
+                        bot.send_message(answer.chat.id, question, reply_markup=markup)
+                    
+                    except IndexError:
+                        bot.send_message(answer.chat.id, 'IndexError: list index out of range')
+                        reset()
+                        bot.send_message(answer.chat.id, 'To choose another song, type in the name of the song.')
         else:
             bot.send_message(answer.chat.id, 'An error occurred during the checking process')
             bot.send_message(answer.chat.id, response)
@@ -78,7 +84,13 @@ def handle_answer(answer):
 def handle_buttons(call):
     global songChosen, chained_lyrics, questionNumber
     if call.data == "learn":
-        bot.send_message(call.message.chat.id, chained_lyrics[questionNumber][1])
+        try:
+            bot.send_message(call.message.chat.id, chained_lyrics[questionNumber][1])
+        except IndexError:
+            bot.send_message(call.message.chat.id, 'IndexError: list index out of range')
+            reset()
+            bot.send_message(call.message.chat.id, 'To choose another song, type in the name of the song.')
+        
         if questionNumber == len(chained_lyrics) - 1:
             reset()
             bot.send_message(call.message.chat.id, 'Congratulations, the song is complete!')
