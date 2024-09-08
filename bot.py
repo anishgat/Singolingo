@@ -119,9 +119,10 @@ def handle_buttons(call):
             raise e
 
 def reset():
-    global songChosen, chained_lyrics, questionNumber
+    global songChosen, chained_lyrics, questionNumber, prevMessageData
     songChosen = False
     questionNumber = 0
     chained_lyrics = []
+    prevMessageData = {}
 
 bot.polling()
