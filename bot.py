@@ -104,7 +104,13 @@ def handle_buttons(call):
         reset()
         bot.send_message(call.message.chat.id, 'To choose another song, type in the name of the song.')
     
-    bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
+    try:
+        bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
+    except telebot.apihelper.ApiTelegramException as e:
+        if "message is not modified" in str(e):
+            bot.send_message(call.message.chat.id, 'Markup is the same. No need to edit.')
+        else:
+            raise e
 
 def reset():
     global songChosen, chained_lyrics, questionNumber
