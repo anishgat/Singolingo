@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Path, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 import models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
@@ -34,6 +35,10 @@ def get_db():
 @app.get("/")
 def home():
     return {"Hello": "World"}
+
+@app.head("/")
+def read_root_head():
+    return Response(status_code=200)
 
 @app.get("/song/{song_id}")
 def get_song_lyrics(song_id: int, db: Session = Depends(get_db)):
