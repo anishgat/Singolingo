@@ -70,7 +70,9 @@ def handle_answer(answer):
                         bot.edit_message_reply_markup(answer.chat.id, prevMessageData[answer.chat.id], reply_markup=None)
                         prevMessageData.pop(answer.chat.id)
                         bot.send_message(answer.chat.id, '✅')
-                        bot.send_message(answer.chat.id, question, reply_markup=markup)
+                        question_message = bot.send_message(answer.chat.id, question, reply_markup=markup)
+
+                        prevMessageData[answer.chat.id] = question_message.message_id
                     
                     except IndexError:
                         bot.send_message(answer.chat.id, 'IndexError: list index out of range')
@@ -86,6 +88,8 @@ def handle_buttons(call):
     if call.data == "learn":
         try:
             bot.send_message(call.message.chat.id, chained_lyrics[questionNumber][1])
+            bot.edit_message_reply_markup(call.message.chat.id, prevMessageData[call.message.chat.id], reply_markup=None)
+            prevMessageData.pop(call.message.chat.id)
         except IndexError:
             bot.send_message(call.message.chat.id, 'IndexError: list index out of range')
             reset()
@@ -98,7 +102,9 @@ def handle_buttons(call):
         else:
             questionNumber += 1
             question = chained_lyrics[questionNumber][0]
-            bot.send_message(call.message.chat.id, question, reply_markup=markup)
+            question_message = bot.send_message(call.message.chat.id, question, reply_markup=markup)
+
+            prevMessageData[call.message.chat.id] = question_message.message_id
 
     elif call.data == "back":
         reset()
