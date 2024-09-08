@@ -88,8 +88,6 @@ def handle_buttons(call):
     if call.data == "learn":
         try:
             bot.send_message(call.message.chat.id, chained_lyrics[questionNumber][1])
-            bot.edit_message_reply_markup(call.message.chat.id, prevMessageData[call.message.chat.id], reply_markup=None)
-            prevMessageData.pop(call.message.chat.id)
         except IndexError:
             bot.send_message(call.message.chat.id, 'IndexError: list index out of range')
             reset()
@@ -112,6 +110,7 @@ def handle_buttons(call):
     
     try:
         bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
+        prevMessageData.pop(call.message.chat.id)
     except telebot.apihelper.ApiTelegramException as e:
         if "message is not modified" in str(e):
             bot.send_message(call.message.chat.id, 'Markup is the same. No need to edit.')
