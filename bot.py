@@ -107,6 +107,8 @@ def handle_buttons(call):
             prevMessageData[call.message.chat.id] = question_message.message_id
 
     elif call.data == "back":
+        bot.edit_message_reply_markup(call.message.chat.id, prevMessageData[call.message.chat.id], reply_markup=None)
+        prevMessageData.pop(call.message.chat.id)
         reset()
         bot.send_message(call.message.chat.id, 'To choose another song, type in the name of the song.')
 
