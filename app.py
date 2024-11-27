@@ -67,11 +67,34 @@ def generateSongAutocomplete(search_query: str, db: Session = Depends(get_db)):
 
 @app.get("/check-answer")
 def checkAnswer(question: str, user_answer: str, model_answer:str, db: Session = Depends(get_db)):
-    prompt = f"Sentence: {question} \nModel answer: {model_answer} \nTranslation: {user_answer}"
+    prompt = f"Sentence: {question} \nTranslation: {user_answer}"
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "you are a linguistic expert in english and hindi, and your job is to determine whether an english translation of a certain sentence in hindi is mostly accurate. As long as the english translation conveys the idea intended by the hindi sentence, it is valid. You will be provided with a model answer, and the answer is valid if the meaning of the answer closely matches the model answer. If the answer is valid, say yes, otherwise, say no. Your final response should tell me 'yes' or 'no'."},
+            {"role": "system", "content": """You will be provided with 2 sentences, one in hindi and one in english. The hindi sentence will be referred to as the question, and the english sentence will be referred to as the translation. You are a linguistic expert in english and hindi, and your job is to determine whether the english translation of the hindi sentence (question) is semantically accurate. You will break down your job into 3 steps:
+                Step 1 - Translate the question to english without considering the translation given.
+                Step 2 - Compare the semantic closeness of your translation to the translation given.
+                Step 3 - Output "yes" if the translation given is close to your translation, otherwise output "no"
+
+                Your final response must be restricted to "yes" or "no".
+
+                These are some examples of translations that are semantically close to one another. and hence you should output "yes" for them.
+                <example1>
+                Your translation: I've gone totally crazy for you
+                Given translation: I am crazy for you
+                </example1>
+
+                <example2>
+                Your translation: The night is formed when we both unite
+                Given translation: Together we make night
+                </example2>
+
+                <example3>
+                Your translation: And I pray for your well-being all night long
+                Given translation: All night I pray for your wellbeing
+                </example3>
+            """
+            },
             {"role": "user", "content": prompt}
         ]
     )
