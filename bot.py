@@ -7,6 +7,8 @@ import re
 
 load_dotenv()
 
+HOST_URL = 'https://singolingo.onrender.com'          # Use http://127.0.0.1:8000 to run locally
+
 TELEGRAM_API_KEY = os.getenv('TELEGRAM_API_KEY')
 bot = telebot.TeleBot(TELEGRAM_API_KEY)
 
@@ -28,7 +30,7 @@ def get_song(message):
     user_id = message.chat.id
 
     if not user_data[user_id]['songChosen']:    
-        response = requests.get('https://singolingo.onrender.com/get-song-id', params={'title': message.text})
+        response = requests.get(f'{HOST_URL}/get-song-id', params={'title': message.text})
         if response.status_code == 200:
             data = response.json()
             
@@ -52,7 +54,7 @@ def handle_answer(answer):
     user_id = answer.chat.id
 
     if user_data[user_id]['songChosen']:
-        response = requests.get('https://singolingo.onrender.com/check-answer', params={'question': user_data[user_id]['chained_lyrics'][user_data[user_id]['questionNumber']][0], 'user_answer': answer.text, 'model_answer': user_data[user_id]['chained_lyrics'][user_data[user_id]['questionNumber']][1]})
+        response = requests.get(f'{HOST_URL}/check-answer', params={'question': user_data[user_id]['chained_lyrics'][user_data[user_id]['questionNumber']][0], 'user_answer': answer.text, 'model_answer': user_data[user_id]['chained_lyrics'][user_data[user_id]['questionNumber']][1]})
         if response.status_code == 200:
             ai_response = response.json()
             if ai_response['response'].lower() == 'no':
