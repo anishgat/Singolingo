@@ -46,6 +46,11 @@ def quiz_form():
             st.markdown(f'<p style="font-size: 1.5rem;">{question_text}<span style="font-size: 2rem;">🎵</span></p>', unsafe_allow_html=True)
             translation = st.text_input(label='Translation', placeholder='Translate the line...', value='', label_visibility='hidden')
             translation_submit = st.form_submit_button("Check")
+            reset_button = st.form_submit_button('Reset', type='primary')
+
+            if reset_button:
+                reset()
+                st.rerun(scope='app')
 
             if translation and translation_submit:
                 response = requests.get('https://singolingo.onrender.com/check-answer', params={'question': question_text, 'user_answer': translation, 'model_answer': model_answer})
