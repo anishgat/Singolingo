@@ -41,9 +41,41 @@ def quiz_form():
             questionNumber = st.session_state['questionNumber']
             
             st.header(st.session_state['songTitle'])
-            st.markdown(f'<p style="font-size: 1.5rem;">{chained_lyrics[questionNumber][0]}<span style="font-size: 2rem;">🐱</span></p>', unsafe_allow_html=True)
-            translation = st.text_input(label="Translation", placeholder="Translate the line...")
+            question_text = chained_lyrics[questionNumber][0]
+            model_answer = chained_lyrics[questionNumber][1]
+            st.markdown(f'<p style="font-size: 1.5rem;">{question_text}<span style="font-size: 2rem;">🎵</span></p>', unsafe_allow_html=True)
+            translation = st.text_input(label='Translation', placeholder='Translate the line...', value='', label_visibility='hidden')
             translation_submit = st.form_submit_button("Check")
+
+            if translation and translation_submit:
+                response = requests.get('https://singolingo.onrender.com/check-answer', params={'question': question_text, 'user_answer': translation, 'model_answer': model_answer})
+                if response.status_code == 200:
+                    ai_response = response.json()
+                    if ai_response['response'].lower() == 'no':
+                        st.toast('Your answer is incorrect', icon='❌')
+                    else:
+                        if questionNumber == (len(chained_lyrics) - 1):
+                            reset()
+                            st.balloons()
+                            st.toast('Congratulations, the song is complete!')
+                            st.rerun(scope='app')
+                        else:
+                            try:
+                                st.session_state['questionNumber'] += 1
+                                st.rerun(scope='fragment')
+                            
+                            except IndexError:
+                                st.toast('IndexError: list index out of range')
+                                reset()
+                else:
+                    st.toast('An error occurred during the checking process')
+                    st.toast(response)
+
+def reset():
+    st.session_state['songChosen'] = False
+    st.session_state['songTitle'] = ''
+    st.session_state['chained_lyrics'] = []
+    st.session_state['questionNumber'] = 0
 
 def main():
     st.title("Singolingo")
