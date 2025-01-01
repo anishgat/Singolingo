@@ -1,4 +1,5 @@
 import streamlit as st
+from time import sleep
 import requests
 import re
 
@@ -63,6 +64,7 @@ def quiz_form():
                             reset()
                             st.balloons()
                             st.toast('Congratulations, the song is complete!')
+                            sleep(2.0)
                             st.rerun(scope='app')
                         else:
                             try:
