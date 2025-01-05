@@ -25,6 +25,7 @@ if 'gameMode' not in st.session_state:
 def search_form():
     # Show search page if no song has been chosen
     if not st.session_state['songChosen']:
+        st.markdown('<p style="font-size: 1.5rem;">Love vibin\' to hindi songs but you have no idea what they mean? <span style="font-size: 2rem;">🤯</span> Search for a hindi song and try to translate it line by line</p>', unsafe_allow_html=True)
         with st.form("search_song_form"):
             st.header("Search for a song")
             song_search = st.text_input(label="Song", placeholder="Search for a song")
