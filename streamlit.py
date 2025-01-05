@@ -4,7 +4,7 @@ import requests
 import re
 
 # For switching between testing and production
-HOST_URL = 'http://127.0.0.1:8000'                 # Use https://singolingo.onrender.com for production
+HOST_URL = 'https://singolingo.onrender.com'                 # Use http://127.0.0.1:8000 to run locally
 
 # Set the page title and layout
 st.set_page_config(page_title="Singolingo", layout="centered")
@@ -19,14 +19,17 @@ if 'chained_lyrics' not in st.session_state:
 if 'questionNumber' not in st.session_state:
     st.session_state['questionNumber'] = 0
 if 'gameMode' not in st.session_state:
-    st.session_state['gameMode'] = 0               # 0 for playing, 1 for learning
+    # Game mode is 0 for playing, 1 for learning
+    st.session_state['gameMode'] = 0               
 
 def search_form():
+    # Show search page if no song has been chosen
     if not st.session_state['songChosen']:
         with st.form("search_song_form"):
             st.header("Search for a song")
             song_search = st.text_input(label="Song", placeholder="Search for a song")
             song_search_submit = st.form_submit_button("Search")
+            
             if song_search_submit:
                 response = requests.get(f'{HOST_URL}/get-song-id', params={'title': song_search})
                 if response.status_code == 200:
@@ -35,12 +38,14 @@ def search_form():
                     st.session_state['songTitle'] = data['title']
                     st.session_state['chained_lyrics'] = list(zip(re.split('\n+', data['hindi_lyrics']), re.split('\n+', data['english_lyrics'])))[0:-2]
                     st.session_state['questionNumber'] = 0
-                    st.rerun()
+                    st.rerun(scope='app')
+                
                 elif response.status_code == 404:
                     st.warning(f'The song {song_search} was not found.')
 
 @st.fragment
 def quiz_form():
+    # Show quiz page if a song has been chosen
     if st.session_state['songChosen']:
         with st.form("quiz_form"):
             chained_lyrics = st.session_state['chained_lyrics']
@@ -66,8 +71,11 @@ def quiz_form():
                 st.session_state['gameMode'] = 1
 
             if check_button:
+                # Check if the user clicked the learn button
+                # If the learn button was not clicked, then check the user's answer and move on to the next question
                 if st.session_state['gameMode'] == 0 and translation:
                     response = requests.get(f'{HOST_URL}/check-answer', params={'question': question_text, 'user_answer': translation, 'model_answer': model_answer})
+                    
                     if response.status_code == 200:
                         ai_response = response.json()
                         if ai_response['response'].lower() == 'no':
@@ -90,7 +98,8 @@ def quiz_form():
                     else:
                         st.toast('An error occurred during the checking process')
                         st.toast(response)
-                
+
+                # If the learn button was clicked, then move on to the next question without checking anything
                 else:
                     if questionNumber == (len(chained_lyrics) - 1):
                         reset()
